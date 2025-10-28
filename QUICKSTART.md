@@ -4,7 +4,7 @@ This guide will help you get started with the Image Analysis & Tagging System.
 
 ## Installation
 
-No installation required! Just Python 3.6+ and a web browser.
+No additional dependencies required! Just Python 3.6+ (standard library) and a modern web browser.
 
 ```bash
 # Clone the repository
@@ -37,12 +37,27 @@ There are two ways to tag images:
 
 ### 3. Save Your Work
 - Click "Save Tagged Image" when done
-- Image is stored in browser localStorage and can be exported
+- Image is stored in browser localStorage for persistence
+- Data can be exported to JSON for backup or sharing
 
 ### 4. View Gallery
 - Click "Load Gallery" to see all tagged images
 - Use search box to filter by tags
 - Click "Export JSON" to download data
+
+## Storage Options
+
+The system supports two storage mechanisms:
+
+**Browser Storage (Default):**
+- Uses browser localStorage for the web interface
+- Data persists across browser sessions
+- Limited to ~5-10MB depending on browser
+
+**Python Backend Storage:**
+- Python backend uses JSON files in the `data/` directory
+- Useful for command-line operations and larger datasets
+- Files: `data/tagged_images.json` and `data/tags_database.json`
 
 ## Python Backend Examples
 
@@ -97,8 +112,8 @@ Annotate images for academic or scientific research.
 
 **Port already in use?**
 ```bash
-# Change the PORT variable in server.py
-PORT = 8080  # or any other available port
+# Edit server.py and change PORT on line 12
+PORT = 8080  # Change from 8000 to any available port
 ```
 
 **Storage limit exceeded?**
