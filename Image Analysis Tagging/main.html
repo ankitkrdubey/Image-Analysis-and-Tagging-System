@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Analysis & Tagging System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f8fc;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      background-color: #0073e6;
+      color: white;
+      padding: 15px 0;
+      width: 100%;
+      text-align: center;
+      font-size: 1.5em;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .container {
+      margin-top: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+    }
+
+    .tag-input {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      width: 60%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-left: 10px;
+      background-color: #0073e6;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005bb5;
+    }
+
+    .tags-display {
+      margin-top: 15px;
+      text-align: left;
+    }
+
+    .tag {
+      display: inline-block;
+      background-color: #e6f0ff;
+      color: #005bb5;
+      padding: 5px 10px;
+      margin: 5px;
+      border-radius: 20px;
+      font-size: 0.9em;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .stats {
+      margin-top: 20px;
+      background: #eef5ff;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .export-btn, .save-btn {
+      margin-top: 15px;
+      background-color: #28a745;
+    }
+
+    .save-btn {
+      background-color: #ff9800;
+    }
+
+    .export-btn:hover {
+      background-color: #218838;
+    }
+
+    .save-btn:hover {
+      background-color: #e68900;
+    }
+  </style>
+</head>
+<body>
+  <header>Image Analysis & Tagging System</header>
+  <div class="container">
+    <img id="imageDisplay" src="https://placehold.co/600x400" alt="Image for tagging" />
+
+    <div class="tag-input">
+      <input type="text" id="tagInput" placeholder="Enter a tag (e.g., box, bottle)" />
+      <button onclick="addTag()">Add Tag</button>
+    </div>
+
+    <div class="tags-display" id="tagsDisplay"></div>
+
+    <div class="controls">
+      <button onclick="prevImage()">⬅ Previous</button>
+      <button onclick="nextImage()">Next ➡</button>
+    </div>
+
+    <button class="export-btn" onclick="exportData()">⬇ Export Tags as JSON</button>
+    <button class="save-btn" onclick="saveToServer()">💾 Save to Server</button>
+
+    <div class="stats" id="stats">Image 1 of 5 | Tagged: 0</div>
+  </div>
+
+  <script>
+    const images = [
+      'https://placekitten.com/600/400',
+      'https://placebear.com/600/400',
+      'https://placehold.co/600x400?text=Box',
+      'https://placehold.co/600x400?text=Bottle',
+      'https://placehold.co/600x400?text=Chair'
+    ];
+
+    let currentIndex = 0;
+    const imageDisplay = document.getElementById('imageDisplay');
+    const tagInput = document.getElementById('tagInput');
+    const tagsDisplay = document.getElementById('tagsDisplay');
+    const stats = document.getElementById('stats');
+
+    const taggedData = {};
+
+    function loadImage() {
+      imageDisplay.src = images[currentIndex];
+      displayTags();
+      updateStats();
+    }
+
+    function addTag() {
+      const tag = tagInput.value.trim();
+      if (!tag) return;
+      if (!taggedData[currentIndex]) taggedData[currentIndex] = [];
+      taggedData[currentIndex].push(tag);
+      tagInput.value = '';
+      displayTags();
+      updateStats();
+    }
+
+    function displayTags() {
+      tagsDisplay.innerHTML = '';
+      const tags = taggedData[currentIndex] || [];
+      tags.forEach(t => {
+        const span = document.createElement('span');
+        span.className = 'tag';
+        span.textContent = t;
+        tagsDisplay.appendChild(span);
+      });
+    }
+
+    function nextImage() {
+      if (currentIndex < images.length - 1) {
+        currentIndex++;
+        loadImage();
+      }
+    }
+
+    function prevImage() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        loadImage();
+      }
+    }
+
+    function updateStats() {
+      const totalTagged = Object.values(taggedData).reduce((a, b) => a + b.length, 0);
+      stats.textContent = `Image ${currentIndex + 1} of ${images.length} | Tagged: ${totalTagged}`;
+    }
+
+    function exportData() {
+      const exportObj = images.map((img, index) => ({
+        image: img,
+        tags: taggedData[index] || []
+      }));
+
+      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportObj, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute('href', dataStr);
+      downloadAnchor.setAttribute('download', 'tagged_data.json');
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    async function saveToServer() {
+      const exportObj = images.map((img, index) => ({
+        image: img,
+        tags: taggedData[index] || []
+      }));
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/upload_tags', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(exportObj)
+        });
+        const result = await response.json();
+        alert(result.message || 'Data uploaded successfully!');
+      } catch (error) {
+        alert('Failed to upload data to server. Make sure Flask backend is running.');
+      }
+    }
+
+    loadImage();
+  </script>
+
+  <!-- Python backend code -->
+  <script type="text/python">
+
+  </script>
+</body>
+</html>
