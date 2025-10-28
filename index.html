@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Analysis & Tagging System</title>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Image Analysis & Tagging System</h1>
+            <p class="subtitle">Analyze and categorize images with manual tagging and automation</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <h2>Upload Image</h2>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="imageInput" accept="image/*" hidden>
+                    <label for="imageInput" class="upload-label">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <span>Click to upload or drag and drop</span>
+                        <span class="upload-hint">PNG, JPG, GIF up to 10MB</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="preview-section" id="previewSection" style="display: none;">
+                <h2>Image Preview</h2>
+                <div class="image-container">
+                    <img id="imagePreview" src="" alt="Preview">
+                    <button class="remove-btn" id="removeImage">&times;</button>
+                </div>
+                <div class="image-info" id="imageInfo"></div>
+            </div>
+
+            <div class="tagging-section" id="taggingSection" style="display: none;">
+                <h2>Add Tags</h2>
+                <div class="tag-input-container">
+                    <input type="text" id="tagInput" placeholder="Enter tags (press Enter or comma)" autocomplete="off">
+                    <button id="addTagBtn" class="add-btn">Add Tag</button>
+                </div>
+                <div class="suggestions" id="suggestions"></div>
+                <div class="tags-display" id="tagsDisplay"></div>
+                
+                <div class="auto-tags-section">
+                    <h3>Auto-Generated Suggestions</h3>
+                    <button id="generateAutoTags" class="auto-btn">Generate Auto Tags</button>
+                    <div class="auto-tags" id="autoTags"></div>
+                </div>
+            </div>
+
+            <div class="actions-section" id="actionsSection" style="display: none;">
+                <button id="saveBtn" class="save-btn">Save Tagged Image</button>
+                <button id="clearBtn" class="clear-btn">Clear All</button>
+            </div>
+
+            <div class="gallery-section">
+                <h2>Tagged Images Gallery</h2>
+                <div class="gallery-controls">
+                    <input type="text" id="searchTags" placeholder="Search by tags...">
+                    <button id="loadGallery" class="load-btn">Load Gallery</button>
+                    <button id="exportData" class="export-btn">Export JSON</button>
+                </div>
+                <div class="gallery-grid" id="galleryGrid"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Image Analysis & Tagging System - Data Annotation Tool</p>
+        </footer>
+    </div>
+
+    <script src="static/js/app.js"></script>
+</body>
+</html>
